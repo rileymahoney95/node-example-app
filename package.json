@@ -1,0 +1,44 @@
+{
+  "name": "node-express-typescript-api",
+  "version": "1.0.0",
+  "description": "Node.js API with Express and TypeScript",
+  "main": "dist/server.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.ts",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^5.5.0",
+    "@aws-sdk/client-dynamodb": "^3.x",
+    "@aws-sdk/lib-dynamodb": "^3.x",
+    "bcryptjs": "^2.4.x",
+    "class-validator": "^0.14.x",
+    "cors": "^2.8.x",
+    "dotenv": "^16.x",
+    "express": "^4.x",
+    "helmet": "^7.x",
+    "jsonwebtoken": "^9.x",
+    "pg": "^8.x",
+    "swagger-ui-express": "^5.x",
+    "typeorm": "^0.3.x",
+    "winston": "^3.x",
+    "zod": "^3.x"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.x",
+    "@types/cors": "^2.8.x",
+    "@types/express": "^4.x",
+    "@types/jsonwebtoken": "^9.x",
+    "@types/node": "^20.x",
+    "@types/swagger-ui-express": "^4.x",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
+    "eslint": "^8.x",
+    "nodemon": "^3.x",
+    "ts-node": "^10.x",
+    "typescript": "^5.x"
+  }
+}
