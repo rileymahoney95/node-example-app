@@ -26,7 +26,7 @@ router.get(
 // Protected routes (admin only)
 router.post(
   '/',
-  adminAuth,
+  auth,
   validate({ body: productCreateSchema }),
   productController.create
 );

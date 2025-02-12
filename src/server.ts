@@ -1,21 +1,30 @@
-import dotenv from 'dotenv';
-import app from './app';
-import logger from './utils/logger';
+import dotenv from "dotenv";
+import app, { cleanup, initializeDatabase } from "./app";
+import logger from "./utils/logger";
 
 dotenv.config();
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  logger.info(`Server is running on port ${port}`);
+const startServer = async () => {
+  await initializeDatabase();
+  app.listen(port, () => {
+    logger.info(`Server is running on port ${port}`);
+  });
+};
+
+startServer();
+
+process.on("unhandledRejection", (error: Error) => {
+  console.error("Unhandled Rejection:", error);
+  cleanup().finally(() => {
+    process.exit(1);
+  });
 });
 
-process.on('unhandledRejection', (error: Error) => {
-  logger.error('Unhandled Rejection:', error);
-  process.exit(1);
+process.on("uncaughtException", (error: Error) => {
+  console.error("Uncaught Exception:", error);
+  cleanup().finally(() => {
+    process.exit(1);
+  });
 });
-
-process.on('uncaughtException', (error: Error) => {
-  logger.error('Uncaught Exception:', error);
-  process.exit(1);
-}); 

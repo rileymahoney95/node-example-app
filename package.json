@@ -8,10 +8,12 @@
     "dev": "nodemon src/server.ts",
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/db/datasource.ts src/config/db/migrations/migration",
+    "migration:run": "ts-node -r ./tsconfig-paths-bootstrap.js src/config/db/scripts/run-migrations.ts"
   },
   "dependencies": {
-    "@asteasolutions/zod-to-openapi": "^5.5.0",
+    "@asteasolutions/zod-to-openapi": "^7.3.0",
     "@aws-sdk/client-dynamodb": "^3.x",
     "@aws-sdk/lib-dynamodb": "^3.x",
     "bcryptjs": "^2.4.x",
@@ -24,8 +26,9 @@
     "pg": "^8.x",
     "swagger-ui-express": "^5.x",
     "typeorm": "^0.3.x",
+    "typeorm-extension": "^3.6.3",
     "winston": "^3.x",
-    "zod": "^3.x"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.x",
@@ -39,6 +42,7 @@
     "eslint": "^8.x",
     "nodemon": "^3.x",
     "ts-node": "^10.x",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.x"
   }
 }

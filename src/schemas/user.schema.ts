@@ -1,4 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+
+extendZodWithOpenApi(z);
 
 export const userCreateSchema = z.object({
   email: z.string().email('Invalid email format'),

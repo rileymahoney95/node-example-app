@@ -1,13 +1,13 @@
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import swaggerUi from 'swagger-ui-express';
-import { errorHandler } from './middleware/error';
-import userRoutes from './routes/user.routes';
-import productRoutes from './routes/product.routes';
-import { AppDataSource } from './config/db/database';
-import logger from './utils/logger';
-import { generateOpenApiDocument } from './openapi/config';
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import { errorHandler } from "./middleware/error";
+import userRoutes from "./routes/user.routes";
+import productRoutes from "./routes/product.routes";
+import { AppDataSource } from "./config/db/datasource";
+import logger from "./utils/logger";
+import { generateOpenApiDocument } from "./openapi/config";
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         // TODO: Add allowed origins
-        'script-src': ["'self'", 'example.com'],
+        "script-src": ["'self'", "example.com"],
       },
     },
   })
@@ -27,15 +27,15 @@ app.use(express.json());
 
 // API Documentation
 const openApiDocument = generateOpenApiDocument();
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
+app.use("/swagger", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
 // Routes
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
-    status: 'error',
+    status: "error",
     message: `Cannot ${req.method} ${req.url}`,
   });
 });
@@ -44,12 +44,25 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Database connection
-AppDataSource.initialize()
-  .then(() => {
-    logger.info('Database connected successfully');
-  })
-  .catch((error) => {
-    logger.error('Error connecting to database:', error);
-  });
+export const initializeDatabase = async () => {
+  AppDataSource.initialize()
+    .then(() => {
+      logger.info("Database connected successfully");
+    })
+    .catch((error) => {
+      logger.error("Error connecting to database:", error);
+    });
+};
+
+export const cleanup = async () => {
+  try {
+    await AppDataSource.destroy();
+    console.log("Database connection closed successfully");
+
+    // Other cleanup logic
+  } catch (error) {
+    console.error("Error closing database connection:", error);
+  }
+};
 
 export default app;

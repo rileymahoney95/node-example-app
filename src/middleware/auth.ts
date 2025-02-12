@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
-import { AppDataSource } from '../config/db/database';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { User } from "../models/User";
+import { AppDataSource } from "../config/db/datasource";
 
 export interface AuthRequest extends Request {
   user?: User;
@@ -13,7 +13,7 @@ export const auth = async (
   next: NextFunction
 ) => {
   try {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    const token = req.header("Authorization")?.replace("Bearer ", "");
 
     if (!token) {
       throw new Error();
@@ -21,7 +21,7 @@ export const auth = async (
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || 'your-secret-key'
+      process.env.JWT_SECRET || "your-secret-key"
     ) as { id: string };
     const user = await AppDataSource.getRepository(User).findOneBy({
       id: decoded.id,
@@ -34,7 +34,7 @@ export const auth = async (
     req.user = user;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Please authenticate' });
+    res.status(401).json({ error: "Please authenticate" });
   }
 };
 
@@ -52,6 +52,6 @@ export const adminAuth = async (
       }
     });
   } catch (error) {
-    res.status(403).json({ error: 'Admin access required' });
+    res.status(403).json({ error: "Admin access required" });
   }
 };

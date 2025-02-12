@@ -1,11 +1,11 @@
-import { Repository } from 'typeorm';
-import { hash, compare } from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User';
-import { AppDataSource } from '../config/db/database';
-import logger from '../utils/logger';
-import { UserCreate, UserLogin } from '../schemas/user.schema';
-import { AppError } from '../utils/AppError';
+import { Repository } from "typeorm";
+import { hash, compare } from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { User } from "../models/User";
+import { AppDataSource } from "../config/db/datasource";
+import logger from "../utils/logger";
+import { UserCreate, UserLogin } from "../schemas/user.schema";
+import { AppError } from "../utils/AppError";
 
 export class UserService {
   private userRepository: Repository<User>;
@@ -20,7 +20,7 @@ export class UserService {
     });
 
     if (existingUser) {
-      throw new AppError(400, 'Email already in use');
+      throw new AppError(400, "Email already in use");
     }
 
     const user = new User(userData);
@@ -34,19 +34,19 @@ export class UserService {
   }: UserLogin): Promise<{ user: User; token: string }> {
     const user = await this.userRepository.findOne({ where: { email } });
     if (!user) {
-      throw new AppError(401, 'Invalid credentials');
+      throw new AppError(401, "Invalid credentials");
     }
 
     const isValid = await compare(password, user.password);
     if (!isValid) {
-      throw new AppError(401, 'Invalid credentials');
+      throw new AppError(401, "Invalid credentials");
     }
 
     const token = jwt.sign(
       { id: user.id },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET || "your-secret-key",
       {
-        expiresIn: '24h',
+        expiresIn: "24h",
       }
     );
 
@@ -56,7 +56,7 @@ export class UserService {
   async findById(id: string): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
     return user;
   }
