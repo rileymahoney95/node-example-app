@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { ProductService } from '../services/product.service';
-import logger from '../utils/logger';
+import { Request, Response } from "express";
+import { ProductService } from "@/services/product.service";
+import logger from "@/utils/logger";
 
 export class ProductController {
   private productService: ProductService;
@@ -14,8 +14,8 @@ export class ProductController {
       const product = await this.productService.create(req.body);
       res.status(201).json(product);
     } catch (error) {
-      logger.error('Error creating product:', error);
-      res.status(400).json({ error: 'Failed to create product' });
+      logger.error("Error creating product:", error);
+      res.status(400).json({ error: "Failed to create product" });
     }
   };
 
@@ -24,8 +24,8 @@ export class ProductController {
       const products = await this.productService.findAll();
       res.json(products);
     } catch (error) {
-      logger.error('Error fetching products:', error);
-      res.status(400).json({ error: 'Failed to fetch products' });
+      logger.error("Error fetching products:", error);
+      res.status(400).json({ error: "Failed to fetch products" });
     }
   };
 
@@ -34,8 +34,8 @@ export class ProductController {
       const product = await this.productService.findById(req.params.id);
       res.json(product);
     } catch (error) {
-      logger.error('Error fetching product:', error);
-      res.status(404).json({ error: 'Product not found' });
+      logger.error("Error fetching product:", error);
+      res.status(404).json({ error: "Product not found" });
     }
   };
 
@@ -44,8 +44,8 @@ export class ProductController {
       const product = await this.productService.update(req.params.id, req.body);
       res.json(product);
     } catch (error) {
-      logger.error('Error updating product:', error);
-      res.status(400).json({ error: 'Failed to update product' });
+      logger.error("Error updating product:", error);
+      res.status(400).json({ error: "Failed to update product" });
     }
   };
 
@@ -54,8 +54,8 @@ export class ProductController {
       await this.productService.delete(req.params.id);
       res.status(204).send();
     } catch (error) {
-      logger.error('Error deleting product:', error);
-      res.status(400).json({ error: 'Failed to delete product' });
+      logger.error("Error deleting product:", error);
+      res.status(400).json({ error: "Failed to delete product" });
     }
   };
-} 
+}

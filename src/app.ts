@@ -7,7 +7,7 @@ import userRoutes from "./routes/user.routes";
 import productRoutes from "./routes/product.routes";
 import { AppDataSource } from "./config/db/datasource";
 import logger from "./utils/logger";
-import { generateOpenApiDocument } from "./openapi/config";
+import { generateOpenApiDocument } from "./config/openapi/config";
 
 const app = express();
 

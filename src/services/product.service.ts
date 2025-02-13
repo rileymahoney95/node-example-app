@@ -1,8 +1,8 @@
 import { Repository } from "typeorm";
-import { Product } from "../models/Product";
-import { AppDataSource } from "../config/db/datasource";
-import { ProductCreate, ProductUpdate } from "../schemas/product.schema";
-import { AppError } from "../utils/AppError";
+import { Product } from "@/models/Product";
+import { AppDataSource } from "@/config/db/datasource";
+import { ProductCreate, ProductUpdate } from "@/schemas/product.schema";
+import { AppError } from "@/utils/AppError";
 
 export class ProductService {
   private productRepository: Repository<Product>;

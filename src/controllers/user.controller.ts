@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
-import { UserService } from '../services/user.service';
-import { AuthRequest } from '../middleware/auth';
-import logger from '../utils/logger';
+import { Request, Response } from "express";
+import { UserService } from "@/services/user.service";
+import { AuthRequest } from "@/middleware/auth";
+import logger from "@/utils/logger";
 
 export class UserController {
   private userService: UserService;
@@ -15,8 +15,8 @@ export class UserController {
       const user = await this.userService.create(req.body);
       res.status(201).json(user);
     } catch (error) {
-      logger.error('Error in user registration:', error);
-      res.status(400).json({ error: 'Registration failed' });
+      logger.error("Error in user registration:", error);
+      res.status(400).json({ error: "Registration failed" });
     }
   };
 
@@ -26,8 +26,8 @@ export class UserController {
       const result = await this.userService.authenticate({ email, password });
       res.json(result);
     } catch (error) {
-      logger.error('Error in user login:', error);
-      res.status(401).json({ error: 'Authentication failed' });
+      logger.error("Error in user login:", error);
+      res.status(401).json({ error: "Authentication failed" });
     }
   };
 
@@ -36,8 +36,8 @@ export class UserController {
       const user = req.user;
       res.json(user);
     } catch (error) {
-      logger.error('Error getting user profile:', error);
-      res.status(400).json({ error: 'Failed to get profile' });
+      logger.error("Error getting user profile:", error);
+      res.status(400).json({ error: "Failed to get profile" });
     }
   };
 }

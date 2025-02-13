@@ -1,20 +1,20 @@
-import { Router } from 'express';
-import { ProductController } from '../controllers/product.controller';
-import { auth, adminAuth } from '../middleware/auth';
-import { validate } from '../middleware/validate';
+import { Router } from "express";
+import { ProductController } from "../controllers/product.controller";
+import { auth, adminAuth } from "../middleware/auth";
+import { validate } from "../middleware/validate";
 import {
   productCreateSchema,
   productUpdateSchema,
-} from '../schemas/product.schema';
-import { z } from 'zod';
+} from "../schemas/product.schema";
+import { z } from "zod";
 
 const router = Router();
 const productController = new ProductController();
 
 // Public routes
-router.get('/', productController.getAll);
+router.get("/", productController.getAll);
 router.get(
-  '/:id',
+  "/:id",
   validate({
     params: z.object({
       id: z.string().uuid(),
@@ -25,13 +25,13 @@ router.get(
 
 // Protected routes (admin only)
 router.post(
-  '/',
+  "/",
   auth,
   validate({ body: productCreateSchema }),
   productController.create
 );
 router.put(
-  '/:id',
+  "/:id",
   adminAuth,
   validate({
     params: z.object({
@@ -42,7 +42,7 @@ router.put(
   productController.update
 );
 router.delete(
-  '/:id',
+  "/:id",
   adminAuth,
   validate({
     params: z.object({

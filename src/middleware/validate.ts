@@ -1,7 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError } from 'zod';
-import { AppError } from '../utils/AppError';
-import logger from '../utils/logger';
+import { Request, Response, NextFunction } from "express";
+import { AnyZodObject, ZodError } from "zod";
+import logger from "@/utils/logger";
 
 interface ValidateSchema {
   body?: AnyZodObject;
@@ -24,14 +23,14 @@ export const validate = (schema: ValidateSchema) => {
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        logger.error('Validation error:', error.errors);
+        logger.error("Validation error:", error.errors);
         const validationErrors = error.errors.map((err) => ({
-          field: err.path.join('.'),
+          field: err.path.join("."),
           message: err.message,
         }));
         return res.status(400).json({
-          status: 'error',
-          message: 'Validation failed',
+          status: "error",
+          message: "Validation failed",
           errors: validationErrors,
         });
       }

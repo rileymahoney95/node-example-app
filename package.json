@@ -4,8 +4,8 @@
   "description": "Node.js API with Express and TypeScript",
   "main": "dist/server.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
+    "start": "node -r reflect-metadata -r ./tsconfig-paths-bootstrap.js dist/server.js",
+    "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "build": "tsc",
     "test": "jest",
     "lint": "eslint . --ext .ts",

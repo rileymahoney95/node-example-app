@@ -1,11 +1,11 @@
 import { Repository } from "typeorm";
 import { hash, compare } from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User } from "../models/User";
-import { AppDataSource } from "../config/db/datasource";
-import logger from "../utils/logger";
-import { UserCreate, UserLogin } from "../schemas/user.schema";
-import { AppError } from "../utils/AppError";
+import { User } from "@/models/User";
+import { AppDataSource } from "@/config/db/datasource";
+import logger from "@/utils/logger";
+import { UserCreate, UserLogin } from "@/schemas/user.schema";
+import { AppError } from "@/utils/AppError";
 
 export class UserService {
   private userRepository: Repository<User>;

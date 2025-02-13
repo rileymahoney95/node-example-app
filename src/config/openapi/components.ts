@@ -1,9 +1,9 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { userCreateSchema, userLoginSchema } from "../schemas/user.schema";
+import { userCreateSchema, userLoginSchema } from "@/schemas/user.schema";
 import {
   productCreateSchema,
   productUpdateSchema,
-} from "../schemas/product.schema";
+} from "@/schemas/product.schema";
 
 export const components = (registry: OpenAPIRegistry) => {
   // Register schemas

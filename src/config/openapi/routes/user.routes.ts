@@ -1,16 +1,19 @@
-import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
-import { userCreateSchema, userLoginSchema } from '../../schemas/user.schema';
-import { z } from 'zod';
+import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
+import {
+  userCreateSchema,
+  userLoginSchema,
+} from "../../../schemas/user.schema";
+import { z } from "zod";
 
 export const userRoutes = (registry: OpenAPIRegistry) => {
   registry.registerPath({
-    method: 'post',
-    path: '/api/users/register',
-    description: 'Register a new user',
+    method: "post",
+    path: "/api/users/register",
+    description: "Register a new user",
     request: {
       body: {
         content: {
-          'application/json': {
+          "application/json": {
             schema: userCreateSchema,
           },
         },
@@ -18,9 +21,9 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
     },
     responses: {
       201: {
-        description: 'User created successfully',
+        description: "User created successfully",
         content: {
-          'application/json': {
+          "application/json": {
             schema: userCreateSchema.omit({ password: true }),
           },
         },
@@ -29,13 +32,13 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
   });
 
   registry.registerPath({
-    method: 'post',
-    path: '/api/users/login',
-    description: 'Login user',
+    method: "post",
+    path: "/api/users/login",
+    description: "Login user",
     request: {
       body: {
         content: {
-          'application/json': {
+          "application/json": {
             schema: userLoginSchema,
           },
         },
@@ -43,9 +46,9 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
     },
     responses: {
       200: {
-        description: 'Login successful',
+        description: "Login successful",
         content: {
-          'application/json': {
+          "application/json": {
             schema: z.object({
               user: userCreateSchema.omit({ password: true }),
               token: z.string(),
@@ -57,19 +60,19 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
   });
 
   registry.registerPath({
-    method: 'get',
-    path: '/api/users/profile',
-    description: 'Get user profile',
+    method: "get",
+    path: "/api/users/profile",
+    description: "Get user profile",
     security: [{ bearerAuth: [] }],
     responses: {
       200: {
-        description: 'User profile retrieved successfully',
+        description: "User profile retrieved successfully",
         content: {
-          'application/json': {
+          "application/json": {
             schema: userCreateSchema.omit({ password: true }),
           },
         },
       },
     },
   });
-}; 
+};

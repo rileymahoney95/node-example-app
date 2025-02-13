@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { User } from "../models/User";
-import { AppDataSource } from "../config/db/datasource";
+import { User } from "@/models/User";
+import { AppDataSource } from "@/config/db/datasource";
 
 export interface AuthRequest extends Request {
   user?: User;
