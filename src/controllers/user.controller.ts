@@ -1,43 +1,42 @@
+import { injectable, inject } from "inversify";
 import { Request, Response } from "express";
 import { UserService } from "@/services/user.service";
-import { AuthRequest } from "@/middleware/auth";
-import logger from "@/utils/logger";
+import { TYPES } from "@/config/container/types";
+import { asyncHandler } from "@/utils/async-handler";
+import { ILogger } from "@/services/logger.service";
 
+@injectable()
 export class UserController {
-  private userService: UserService;
+  constructor(
+    @inject(TYPES.UserService) private userService: UserService,
+    @inject(TYPES.Logger) private logger: ILogger
+  ) {}
 
-  constructor() {
-    this.userService = new UserService();
-  }
+  register = asyncHandler(async (req: Request, res: Response) => {
+    const user = await this.userService.create(req.body);
+    this.logger.info(`Created user ${user.id}`);
+    res.status(201).json(user);
+  });
 
-  register = async (req: Request, res: Response) => {
-    try {
-      const user = await this.userService.create(req.body);
-      res.status(201).json(user);
-    } catch (error) {
-      logger.error("Error in user registration:", error);
-      res.status(400).json({ error: "Registration failed" });
-    }
-  };
+  findById = asyncHandler(async (req: Request, res: Response) => {
+    const user = await this.userService.findById(req.params.id);
+    res.json(user);
+  });
 
-  login = async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
-      const result = await this.userService.authenticate({ email, password });
-      res.json(result);
-    } catch (error) {
-      logger.error("Error in user login:", error);
-      res.status(401).json({ error: "Authentication failed" });
-    }
-  };
+  findAll = asyncHandler(async (req: Request, res: Response) => {
+    const users = await this.userService.findAll();
+    res.json(users);
+  });
 
-  getProfile = async (req: AuthRequest, res: Response) => {
-    try {
-      const user = req.user;
-      res.json(user);
-    } catch (error) {
-      logger.error("Error getting user profile:", error);
-      res.status(400).json({ error: "Failed to get profile" });
-    }
-  };
+  update = asyncHandler(async (req: Request, res: Response) => {
+    const user = await this.userService.update(req.params.id, req.body);
+    this.logger.info(`Updated user ${user.id}`);
+    res.json(user);
+  });
+
+  delete = asyncHandler(async (req: Request, res: Response) => {
+    await this.userService.delete(req.params.id);
+    this.logger.info(`Deleted user ${req.params.id}`);
+    res.status(204).send();
+  });
 }

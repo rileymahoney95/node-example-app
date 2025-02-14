@@ -1,17 +1,21 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { userCreateSchema, userUpdateSchema } from "@/schemas/user.schema";
+import {
+  walletCreateSchema,
+  walletUpdateSchema,
+} from "@/schemas/wallet.schema";
+import { userCreateSchema } from "@/schemas/user.schema";
 
-export const userRoutes = (registry: OpenAPIRegistry) => {
+export const walletRoutes = (registry: OpenAPIRegistry) => {
   registry.registerPath({
     method: "post",
-    path: "/users/register",
-    tags: ["Users"],
-    description: "Register a new user",
+    path: "/wallets",
+    tags: ["Wallets"],
+    description: "Create a new wallet",
     request: {
       body: {
         content: {
           "application/json": {
-            schema: userCreateSchema,
+            schema: walletCreateSchema,
           },
         },
       },
@@ -30,9 +34,21 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
 
   registry.registerPath({
     method: "get",
-    path: "/users/{id}",
-    tags: ["Users"],
-    description: "Get a user by ID",
+    path: "/wallets",
+    tags: ["Wallets"],
+    description: "Get all wallets",
+    responses: {
+      200: {
+        description: "Wallets fetched successfully",
+      },
+    },
+  });
+
+  registry.registerPath({
+    method: "get",
+    path: "/wallets/{id}",
+    tags: ["Wallets"],
+    description: "Get a wallet by ID",
     parameters: [
       {
         name: "id",
@@ -46,21 +62,16 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
     ],
     responses: {
       200: {
-        description: "User fetched successfully",
-        content: {
-          "application/json": {
-            schema: userCreateSchema,
-          },
-        },
+        description: "Wallet fetched successfully",
       },
     },
   });
 
   registry.registerPath({
     method: "patch",
-    path: "/users/{id}",
-    tags: ["Users"],
-    description: "Update a user by ID",
+    path: "/wallets/{id}",
+    tags: ["Wallets"],
+    description: "Update a wallet by ID",
     parameters: [
       {
         name: "id",
@@ -76,28 +87,23 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
       body: {
         content: {
           "application/json": {
-            schema: userUpdateSchema,
+            schema: walletUpdateSchema,
           },
         },
       },
     },
     responses: {
       200: {
-        description: "User updated successfully",
-        content: {
-          "application/json": {
-            schema: userUpdateSchema,
-          },
-        },
+        description: "Wallet updated successfully",
       },
     },
   });
 
   registry.registerPath({
     method: "delete",
-    path: "/users/{id}",
-    tags: ["Users"],
-    description: "Delete a user by ID",
+    path: "/wallets/{id}",
+    tags: ["Wallets"],
+    description: "Delete a wallet by ID",
     parameters: [
       {
         name: "id",
@@ -111,7 +117,7 @@ export const userRoutes = (registry: OpenAPIRegistry) => {
     ],
     responses: {
       204: {
-        description: "User deleted successfully",
+        description: "Wallet deleted successfully",
       },
     },
   });

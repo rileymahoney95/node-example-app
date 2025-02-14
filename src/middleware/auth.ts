@@ -1,41 +1,42 @@
 import { Request, Response, NextFunction } from "express";
+import { container } from "@/config/container/container";
+import { TYPES } from "@/config/container/types";
+import { ILogger } from "@/services/logger.service";
+import { IUserService } from "@/interfaces/services";
 import jwt from "jsonwebtoken";
-import { User } from "@/models/User";
+import { UserEntity } from "@/models/user.entity";
 import { AppDataSource } from "@/config/db/datasource";
 
 export interface AuthRequest extends Request {
-  user?: User;
+  user?: any;
+  token?: string;
 }
 
-export const auth = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
+export const authMiddleware = () => {
+  const logger = container.get<ILogger>(TYPES.Logger);
+  const userService = container.get<IUserService>(TYPES.UserService);
 
-    if (!token) {
-      throw new Error();
+  return async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const token = req.headers.authorization?.split(" ")[1];
+      if (!token) {
+        throw new Error("No token provided");
+      }
+
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "your-secret-key"
+      ) as { id: string };
+
+      const user = await userService.findById(decoded.id);
+      req.user = user;
+      req.token = token;
+      next();
+    } catch (error) {
+      logger.error("Authentication error:", error);
+      res.status(401).json({ error: "Not authorized" });
     }
-
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "your-secret-key"
-    ) as { id: string };
-    const user = await AppDataSource.getRepository(User).findOneBy({
-      id: decoded.id,
-    });
-
-    if (!user) {
-      throw new Error();
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(401).json({ error: "Please authenticate" });
-  }
+  };
 };
 
 export const adminAuth = async (
@@ -44,7 +45,7 @@ export const adminAuth = async (
   next: NextFunction
 ) => {
   try {
-    await auth(req, res, () => {
+    await authMiddleware()(req, res, () => {
       if (req.user?.isAdmin) {
         next();
       } else {

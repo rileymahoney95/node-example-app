@@ -22,12 +22,14 @@
     "dotenv": "^16.x",
     "express": "^4.x",
     "helmet": "^7.x",
+    "inversify": "^6.2.2",
     "jsonwebtoken": "^9.x",
     "pg": "^8.x",
     "swagger-ui-express": "^5.x",
     "typeorm": "^0.3.x",
     "typeorm-extension": "^3.6.3",
-    "winston": "^3.x",
+    "pino": "^8.x",
+    "pino-pretty": "^10.x",
     "zod": "^3.24.2"
   },
   "devDependencies": {

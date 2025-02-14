@@ -2,14 +2,22 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import swaggerUi from "swagger-ui-express";
-import { errorHandler } from "./middleware/error";
+import { errorHandler } from "./middleware/error-handler";
 import userRoutes from "./routes/user.routes";
-import productRoutes from "./routes/product.routes";
+import walletRoutes from "./routes/wallet.routes";
 import { AppDataSource } from "./config/db/datasource";
 import logger from "./utils/logger";
 import { generateOpenApiDocument } from "./config/openapi/config";
+import "reflect-metadata";
+import { container } from "./config/container/container";
+import { TYPES } from "./config/container/types";
+import { ILogger } from "./services/logger.service";
 
 const app = express();
+
+const initializeContainer = () => {
+  const logger = container.get<ILogger>(TYPES.Logger);
+};
 
 // Middleware
 app.use(
@@ -29,9 +37,12 @@ app.use(express.json());
 const openApiDocument = generateOpenApiDocument();
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
+// Initialize container and routes
+initializeContainer();
+
 // Routes
-app.use("/api/users", userRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/wallets", walletRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
@@ -40,28 +51,28 @@ app.use((req, res) => {
   });
 });
 
-// Error handling
+// Global error handler
 app.use(errorHandler);
 
-// Database connection
-export const initializeDatabase = async () => {
-  AppDataSource.initialize()
-    .then(() => {
-      logger.info("Database connected successfully");
-    })
-    .catch((error) => {
-      logger.error("Error connecting to database:", error);
-    });
+export const initializeApp = async () => {
+  try {
+    await AppDataSource.initialize();
+    logger.info("Database connected successfully");
+
+    logger.info("Dependency injection container initialized successfully");
+  } catch (error) {
+    logger.error("Error during application initialization:", error);
+    throw error;
+  }
 };
 
 export const cleanup = async () => {
   try {
     await AppDataSource.destroy();
-    console.log("Database connection closed successfully");
-
-    // Other cleanup logic
+    logger.info("Database connection closed successfully");
   } catch (error) {
-    console.error("Error closing database connection:", error);
+    logger.error("Error closing database connection:", error);
+    throw error;
   }
 };
 

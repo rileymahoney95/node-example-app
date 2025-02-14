@@ -7,14 +7,13 @@ export const generateOpenApiDocument = () => {
   return generator.generateDocument({
     openapi: "3.0.0",
     info: {
-      title: "Your API Name",
+      title: "Wallet Service API",
       version: "1.0.0",
-      description: "API documentation using zod-to-openapi",
     },
     servers: [
       {
-        url: "http://localhost:3000",
-        description: "Local development server",
+        url: `http://localhost:${process.env.PORT}/api/v1`,
+        description: "API V1",
       },
     ],
   });

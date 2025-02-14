@@ -1,16 +1,16 @@
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { userCreateSchema, userLoginSchema } from "@/schemas/user.schema";
+import { userCreateSchema, userUpdateSchema } from "@/schemas/user.schema";
 import {
-  productCreateSchema,
-  productUpdateSchema,
-} from "@/schemas/product.schema";
+  walletCreateSchema,
+  walletUpdateSchema,
+} from "@/schemas/wallet.schema";
 
 export const components = (registry: OpenAPIRegistry) => {
   // Register schemas
   registry.register("UserCreate", userCreateSchema);
-  registry.register("UserLogin", userLoginSchema);
-  registry.register("ProductCreate", productCreateSchema);
-  registry.register("ProductUpdate", productUpdateSchema);
+  registry.register("UserUpdate", userUpdateSchema);
+  registry.register("WalletCreate", walletCreateSchema);
+  registry.register("WalletUpdate", walletUpdateSchema);
 
   // Register security schemes
   registry.registerComponent("securitySchemes", "bearerAuth", {

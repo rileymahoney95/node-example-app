@@ -1,63 +1,51 @@
-import { Repository } from "typeorm";
-import { hash, compare } from "bcryptjs";
-import jwt from "jsonwebtoken";
-import { User } from "@/models/User";
-import { AppDataSource } from "@/config/db/datasource";
-import logger from "@/utils/logger";
-import { UserCreate, UserLogin } from "@/schemas/user.schema";
-import { AppError } from "@/utils/AppError";
+import { injectable, inject } from "inversify";
+import { UserEntity } from "@/models/user.entity";
+import { UserCreate, UserUpdate } from "@/schemas/user.schema";
+import { BadRequestError, NotFoundError } from "@/constants/errors/app-errors";
+import { TYPES } from "@/config/container/types";
+import { IUserService } from "@/interfaces/services";
+import { ILogger } from "@/services/logger.service";
+import { UserRepository } from "@/repositories/user.repository";
 
-export class UserService {
-  private userRepository: Repository<User>;
+@injectable()
+export class UserService implements IUserService {
+  constructor(
+    @inject(TYPES.UserRepository) private userRepository: UserRepository,
+    @inject(TYPES.Logger) private logger: ILogger
+  ) {}
 
-  constructor() {
-    this.userRepository = AppDataSource.getRepository(User);
-  }
-
-  async create(userData: UserCreate): Promise<User> {
-    const existingUser = await this.userRepository.findOne({
-      where: { email: userData.email },
-    });
-
-    if (existingUser) {
-      throw new AppError(400, "Email already in use");
-    }
-
-    const user = new User(userData);
-    user.password = await hash(user.password, 10);
-    return this.userRepository.save(user);
-  }
-
-  async authenticate({
-    email,
-    password,
-  }: UserLogin): Promise<{ user: User; token: string }> {
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) {
-      throw new AppError(401, "Invalid credentials");
-    }
-
-    const isValid = await compare(password, user.password);
-    if (!isValid) {
-      throw new AppError(401, "Invalid credentials");
-    }
-
-    const token = jwt.sign(
-      { id: user.id },
-      process.env.JWT_SECRET || "your-secret-key",
-      {
-        expiresIn: "24h",
-      }
+  async create(userData: UserCreate): Promise<UserEntity> {
+    const existingUser = await this.userRepository.findUserByExternalIds(
+      userData.externalIds
     );
 
-    return { user, token };
+    if (existingUser) {
+      throw new BadRequestError(
+        `User with external id ${userData.externalIds} already exists`
+      );
+    }
+
+    this.logger.info(`Creating new user with external ids: ${userData.externalIds}`);
+    return this.userRepository.createUser(userData);
   }
 
-  async findById(id: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async findById(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOneBy({ id });
     if (!user) {
-      throw new Error("User not found");
+      throw new NotFoundError("User not found");
     }
     return user;
+  }
+
+  async findAll(): Promise<UserEntity[]> {
+    return this.userRepository.find();
+  }
+
+  async update(id: string, userData: UserUpdate): Promise<UserEntity> {
+    return this.userRepository.updateUser(id, userData);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.userRepository.delete(id);
   }
 }

@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { UserController } from "../controllers/user.controller";
-import { auth } from "../middleware/auth";
+import { container } from "@/config/container/container";
+import { TYPES } from "@/config/container/types";
+import { UserController } from "@/controllers/user.controller";
 import { validate } from "../middleware/validate";
-import { userCreateSchema, userLoginSchema } from "../schemas/user.schema";
+import { userCreateSchema } from "../schemas/user.schema";
 
 const router = Router();
-const userController = new UserController();
+
+const userController = container.get<UserController>(TYPES.UserController);
 
 // Public routes
 router.post(
@@ -13,13 +15,9 @@ router.post(
   validate({ body: userCreateSchema }),
   userController.register
 );
-router.post(
-  "/login",
-  validate({ body: userLoginSchema }),
-  userController.login
-);
 
-// Protected routes
-router.get("/profile", auth, userController.getProfile);
+router.get("/:id", userController.findById);
+router.patch("/:id", userController.update);
+router.delete("/:id", userController.delete);
 
 export default router;
