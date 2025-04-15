@@ -1,24 +1,28 @@
 import { ErrorCode } from "./error-codes.enum";
 
 export class AppError extends Error {
+  public code: ErrorCode;
+  public statusCode: number;
+  public data?: any;
+
   constructor(
-    public statusCode: number,
-    public message: string,
-    public isOperational = true
+    message: string,
+    code: ErrorCode,
+    statusCode: number,
+    data?: any
   ) {
     super(message);
+    this.code = code;
     this.statusCode = statusCode;
-    this.isOperational = isOperational;
+    this.data = data;
     Object.setPrototypeOf(this, AppError.prototype);
-    Error.captureStackTrace(this, this.constructor);
   }
 }
 
 export class BadRequestError extends AppError {
   code: ErrorCode;
   constructor(message: string) {
-    super(400, message);
-    this.code = ErrorCode.BAD_REQUEST;
+    super(message, ErrorCode.BAD_REQUEST, 400);
     Object.setPrototypeOf(this, BadRequestError.prototype);
   }
 }
@@ -26,8 +30,7 @@ export class BadRequestError extends AppError {
 export class NotFoundError extends AppError {
   code: ErrorCode;
   constructor(message: string) {
-    super(404, message);
-    this.code = ErrorCode.NOT_FOUND;
+    super(message, ErrorCode.NOT_FOUND, 404);
     Object.setPrototypeOf(this, NotFoundError.prototype);
   }
 }
@@ -35,8 +38,7 @@ export class NotFoundError extends AppError {
 export class ValidationError extends AppError {
   code: ErrorCode;
   constructor(message: string) {
-    super(422, message);
-    this.code = ErrorCode.VALIDATION_ERROR;
+    super(message, ErrorCode.VALIDATION_ERROR, 400);
     Object.setPrototypeOf(this, ValidationError.prototype);
   }
 }
@@ -44,17 +46,22 @@ export class ValidationError extends AppError {
 export class UnauthorizedError extends AppError {
   code: ErrorCode;
   constructor(message: string) {
-    super(401, message);
-    this.code = ErrorCode.AUTHORIZATION_ERROR;
+    super(message, ErrorCode.AUTHORIZATION_ERROR, 401);
     Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+
+export class InvalidOperationError extends AppError {
+  constructor(message: string, data?: any) {
+    super(message, ErrorCode.INVALID_OPERATION, 422, data);
+    Object.setPrototypeOf(this, InvalidOperationError.prototype);
   }
 }
 
 export class ExternalServiceError extends AppError {
   code: ErrorCode;
   constructor(message: string) {
-    super(500, message);
-    this.code = ErrorCode.EXTERNAL_SERVICE_ERROR;
+    super(message, ErrorCode.EXTERNAL_SERVICE_ERROR, 500);
     Object.setPrototypeOf(this, ExternalServiceError.prototype);
   }
 }

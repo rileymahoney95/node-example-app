@@ -28,4 +28,4 @@ router.patch(
 );
 router.delete("/:id", authMiddleware(), walletController.delete);
 
-export default router;
+export { router as walletRoutes };

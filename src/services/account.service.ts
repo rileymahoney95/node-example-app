@@ -16,9 +16,7 @@ export class AccountService implements IAccountService {
   ) {}
 
   async create(accountData: AccountCreate): Promise<AccountEntity> {
-    this.logger.info(
-      `Creating new account for wallet ${accountData.walletId} with id: ${accountData.id}`
-    );
+    this.logger.info(`Creating new account for wallet`, accountData);
     return this.accountRepository.createAccount(accountData);
   }
 

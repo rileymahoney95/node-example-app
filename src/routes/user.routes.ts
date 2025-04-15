@@ -20,4 +20,4 @@ router.get("/:id", userController.findById);
 router.patch("/:id", userController.update);
 router.delete("/:id", userController.delete);
 
-export default router;
+export { router as userRoutes };
