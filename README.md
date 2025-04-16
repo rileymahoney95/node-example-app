@@ -23,9 +23,68 @@ A modern, production-ready API boilerplate featuring TypeScript, Express, and co
 - [Security Best Practices](#security-best-practices)
 - [Troubleshooting](#troubleshooting)
 
-## Overview
+## Architecture and Tech Stack
 
-This API boilerplate provides a solid foundation for building enterprise-grade web applications with:
+### 🧱 Code Structure
+
+This project follows a **Layered Architecture** pattern (also known as "Service-oriented MVC"). Each layer has a clear responsibility, making the codebase easier to maintain, test, and scale.
+
+#### Models (Entities)
+
+- Represent the core **domain data structures**
+- Define **relationships** (e.g., `OneToMany`, `ManyToOne`)
+- Track **external IDs** for integration with third-party systems
+- Specify **indexes** for performance optimization
+- No business logic should exist here — just structure
+
+#### Repositories
+
+- One repository per entity (e.g., `UserRepository`)
+- Contain **pure database operations** (CRUD, queries)
+- No business logic — just data access
+- Extend TypeORM's base repository or custom base class
+- Support utilities like **pagination** and filtering
+
+#### Services
+
+- Encapsulate **business logic** and domain rules
+- Call multiple repositories and/or external APIs
+- Should be **stateless** and testable
+- Avoid circular dependencies between services
+- Most **flexible layer** in terms of structure and conventions
+
+#### Schemas
+
+- Define **input/output types** for your API
+- Provide **runtime validation** (e.g., with `zod`, `class-validator`)
+- Used in both **controllers** and **services**
+- Can generate **OpenAPI/Swagger** documentation automatically
+
+#### Controllers
+
+- Act as **route handlers**
+- Responsible for **request/response orchestration**
+- Delegate logic to the appropriate service
+- Handle status codes, error formatting, and output serialization
+- Avoid placing any business logic here
+
+#### Routes
+
+- Define **API endpoints** (e.g., `/users`, `/auth/login`)
+- Apply **route-specific middleware** (e.g., auth, logging)
+- Pass requests to the appropriate **controller**
+
+---
+
+#### Abstraction Philosophy
+
+When designing entities and services, think through a few **real-world use cases** to validate your design. Good abstractions:
+
+- Support future changes with minimal rework
+- Encourage **separation of concerns**
+- Surface boundaries between internal logic and third-party systems
+
+---
 
 ### Core Technologies
 
@@ -37,70 +96,14 @@ This API boilerplate provides a solid foundation for building enterprise-grade w
 - **OpenAPI/Swagger** - Automated API documentation
 - **Winston** - Structured logging
 
-### Why These Technologies?
-
-- **TypeScript**: Catches errors early, improves maintainability, and provides better IDE support
-- **Express**: Mature ecosystem, flexible middleware system, and excellent performance
-- **Zod**: Type-safe schema validation that integrates perfectly with TypeScript
-- **TypeORM/DynamoDB**: Flexible database options for both SQL and NoSQL needs
-
-## Features
-
-### Core Functionality
-
-- 🔐 **Authentication & Authorization**
-
-  - JWT-based authentication
-  - Role-based access control (Admin/User)
-  - Secure password hashing with bcrypt
-
-- 🛡️ **Security**
-
-  - Helmet.js for HTTP headers
-  - CORS configuration
-  - Request validation
-  - Rate limiting support
-
-- 📝 **API Documentation**
-
-  - Auto-generated OpenAPI/Swagger docs
-  - Interactive API testing interface
-  - Type-safe schema generation
-
-- 🔄 **Error Handling**
-  - Global error handling middleware
-  - Custom error classes
-  - Validation error handling
-  - Async error catching
-
-### API Features
-
-- 👥 **User Management**
-
-  - User registration and authentication
-  - Profile management
-  - Role-based permissions
-
-- 🛍️ **Product Management**
-
-  - CRUD operations
-  - Validation rules
-  - Admin-only access controls
-
-- 📊 **Database Integration**
-  - TypeORM for PostgreSQL
-  - Repository pattern
-  - Migration support
-  - DynamoDB integration
-
 ## Prerequisites
 
 Before you begin, ensure you have installed:
 
-- Node.js (v14 or higher)
+- Node.js (v20 or higher)
 - npm or yarn
 - PostgreSQL
-- AWS Account (for DynamoDB features)
+- AWS Account
 
 ## Installation
 
