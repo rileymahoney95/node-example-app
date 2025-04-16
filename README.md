@@ -4,11 +4,9 @@ A modern, production-ready API boilerplate featuring TypeScript, Express, and co
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
+- [Architecture and Tech Stack](#architecture-and-tech-stack)
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
-- [Project Structure](#project-structure)
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [API Documentation](#api-documentation)
@@ -151,38 +149,6 @@ AWS_SECRET_ACCESS_KEY=your-secret-key
 # Logging
 LOG_LEVEL=info
 ```
-
-## Project Structure
-
-```
-src/
-├── config/         # Configuration files
-│   ├── db/        # Database configurations
-│   └── aws/       # AWS configurations
-├── controllers/    # Request handlers
-├── middleware/     # Custom middleware
-│   ├── auth.ts    # Authentication middleware
-│   ├── error.ts   # Error handling middleware
-│   └── validate.ts # Request validation
-├── models/        # Database models
-├── routes/        # Route definitions
-├── services/      # Business logic
-├── utils/         # Utility functions
-├── openapi/       # API documentation
-├── app.ts         # Express app setup
-└── server.ts      # Server entry point
-```
-
-### Directory Purposes
-
-- **config/**: Application configuration including database and AWS settings
-- **controllers/**: HTTP request handlers implementing the API endpoints
-- **middleware/**: Express middleware for authentication, validation, etc.
-- **models/**: Database models and schemas
-- **routes/**: API route definitions and endpoint grouping
-- **services/**: Business logic and data access layer
-- **utils/**: Shared utilities and helper functions
-- **openapi/**: API documentation and Swagger configuration
 
 ## Configuration
 
